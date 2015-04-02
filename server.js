@@ -2,8 +2,12 @@
  * Created by Donald on 4/1/2015.
  *
  * Maintenance Log:
- *  4/2/2015 Converted to an express server; added a route to handle bad addresses
+ *  4/2/2015 Converted to an express server; added a route to handle bad
+ *  addresses; Validated with JSLint
  */
+
+"use strict";
+
 var express = require('express');
 
 /**
@@ -19,44 +23,44 @@ function ExpressWebserver() {
   var ipaddress = process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1';
   var port = process.env.OPENSHIFT_NODEJS_PORT || 1337;
 
-  var initializeServer = function() {
+  var initializeServer = function () {
     app = express();
-  }
+  };
 
-  var initializeRoutes = function() {
-    app.get('/', function(req, res) {
+  var initializeRoutes = function () {
+    app.get('/', function (req, res) {
 
-        var date = new Date();
+      var date = new Date();
 
-        res.writeHead(200, {'content-type':'text/html'} );
-        res.write('<h1>Hello Cloud</h1>');
-        res.write('<h4>This page was loaded: ' + date + '</h4>');
-        res.end();
-      });
+      res.writeHead(200, {'content-type': 'text/html'});
+      res.write('<h1>Hello Cloud</h1>');
+      res.write('<h4>This page was loaded: ' + date + '</h4>');
+      res.end();
+    });
 
-    app.get('/*', function(req, res) {
-        res.writeHead(200, {'content-type':'text/html'} );
-        res.write("<h4>Error: The page requested could not be found</h4>");
-        res.end();
-      });
-  }
+    app.get('/*', function (req, res) {
+      res.writeHead(200, {'content-type': 'text/html'});
+      res.write("<h4>Error: The page requested could not be found</h4>");
+      res.end();
+    });
+  };
 
-  var beginListening = function() {
-    var server = app.listen(port, host, function() {
+  var beginListening = function () {
+    var server = app.listen(port, ipaddress, function () {
       var _port = server.address().port;
       var _ipaddress = server.address().address;
 
       console.log('Listening on: http://' + _ipaddress + ':' + _port);
     });
-  }
+  };
 
   return {
-    start: function() {
+    start: function () {
       initializeServer();
       initializeRoutes();
       beginListening();
     }
-  }
+  };
 }
 
 new ExpressWebserver().start();
