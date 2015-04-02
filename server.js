@@ -19,5 +19,5 @@ http.createServer(function(req, res) {
   res.end();
 
   console.log('Sending http response', res);
-  }).listen(1337, '127.0.0.1');
+  }).listen(port, host);
 console.log('Server running at http://' + host + ':' + port + '/');
