@@ -1,0 +1,4 @@
+**/*.bak
+.idea/workspace.xml
+.idea/tasks.xml
+npm-debug.log

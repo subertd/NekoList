@@ -1,35 +1,14 @@
 {
-  "name": "OpenShift-Sample-App",
-  "version": "1.0.0",
-  "description": "OpenShift Sample Application",
-  "keywords": [
-    "OpenShift",
-    "Node.js",
-    "application",
-    "openshift"
-  ],
+  "name": "cs496-cloud-and-mobile-software-development",
   "author": {
-    "name": "OpenShift",
-    "email": "ramr@example.org",
-    "url": "http://www.openshift.com/"
+    "name": "Donald Subert",
+    "email": "subertd@onid.oregonstate.edu"
   },
-  "homepage": "http://www.openshift.com/",
+  "version": "0.0.1",
+  "main": "server.js",
+  "dependencies": {  },
   "repository": {
     "type": "git",
-    "url": "https://github.com/openshift/origin-server"
-  },
-
-  "engines": {
-    "node": ">= 0.6.0",
-    "npm": ">= 1.0.0"
-  },
-
-  "dependencies": {
-    "express": "~3.4.4"
-  },
-  "devDependencies": {},
-  "bundleDependencies": [],
-
-  "private": true,
-  "main": "server.js"
+    "url": "ssh://551c63f85973ca05430002b8@nodejs-subertd.rhcloud.com/~/git/nodejs.git/"
+  }
 }
