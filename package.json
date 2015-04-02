@@ -4,9 +4,12 @@
     "name": "Donald Subert",
     "email": "subertd@onid.oregonstate.edu"
   },
-  "version": "0.0.1",
+  "version": "0.0.2",
+  "private": true,
   "main": "server.js",
-  "dependencies": {  },
+  "dependencies": {
+    "express": "~3.4.4"
+  },
   "repository": {
     "type": "git",
     "url": "ssh://551c63f85973ca05430002b8@nodejs-subertd.rhcloud.com/~/git/nodejs.git/"

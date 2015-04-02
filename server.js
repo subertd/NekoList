@@ -1,23 +1,62 @@
 /**
  * Created by Donald on 4/1/2015.
+ *
+ * Maintenance Log:
+ *  4/2/2015 Converted to an express server; added a route to handle bad addresses
  */
-var host = process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1';
-var port = process.env.OPENSHIFT_NODEJS_PORT || 1337;
+var express = require('express');
 
-var http = require('http');
+/**
+ * class ExpressWebserver
+ *
+ * @constructor
+ * @method start, starts the express webserver
+ */
+function ExpressWebserver() {
 
-http.createServer(function(req, res) {
-  console.log('Receiving an http request', req);
+  var app = null;
 
-  // Get the date and time
-  var date = new Date();
+  var ipaddress = process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1';
+  var port = process.env.OPENSHIFT_NODEJS_PORT || 1337;
 
-  // Write the response
-  res.writeHead(200, {'content-type': 'text/html'});
-  res.write('<h1>Hello Cloud</h1>');
-  res.write('<h4>This page was loaded: ' + date + '</h4>');
-  res.end();
+  var initializeServer = function() {
+    app = express();
+  }
 
-  console.log('Sending http response', res);
-  }).listen(port, host);
-console.log('Server running at http://' + host + ':' + port + '/');
+  var initializeRoutes = function() {
+    app.get('/', function(req, res) {
+
+        var date = new Date();
+
+        res.writeHead(200, {'content-type':'text/html'} );
+        res.write('<h1>Hello Cloud</h1>');
+        res.write('<h4>This page was loaded: ' + date + '</h4>');
+        res.end();
+      });
+
+    app.get('/*', function(req, res) {
+        res.writeHead(200, {'content-type':'text/html'} );
+        res.write("<h4>Error: The page requested could not be found</h4>");
+        res.end();
+      });
+  }
+
+  var beginListening = function() {
+    var server = app.listen(port, host, function() {
+      var _port = server.address().port;
+      var _ipaddress = server.address().address;
+
+      console.log('Listening on: http://' + _ipaddress + ':' + _port);
+    });
+  }
+
+  return {
+    start: function() {
+      initializeServer();
+      initializeRoutes();
+      beginListening();
+    }
+  }
+}
+
+new ExpressWebserver().start();
