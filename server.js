@@ -24,7 +24,7 @@ function ExpressWebserver() {
   var port = process.env.OPENSHIFT_NODEJS_PORT || 1337;
 
   var htmlPrefix = "<!doctype html><html><head>" +
-    "<meta charset='utf8'><title>CS496 - Cloud/Mobile Development</title>" +
+    "<meta charset='utf-8'><title>CS496 - Cloud/Mobile Development</title>" +
     "</head><body>";
 
   var htmlSuffix = "</body></html>";
