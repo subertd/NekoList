@@ -23,6 +23,12 @@ function ExpressWebserver() {
   var ipaddress = process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1';
   var port = process.env.OPENSHIFT_NODEJS_PORT || 1337;
 
+  var htmlPrefix = "<!doctype html><html><head>" +
+    "<meta charset='utf8'><title>CS496 - Cloud/Mobile Development</title>" +
+    "</head><body>";
+
+  var htmlSuffix = "</body></html>";
+
   var initializeServer = function () {
     app = express();
   };
@@ -33,14 +39,18 @@ function ExpressWebserver() {
       var date = new Date();
 
       res.writeHead(200, {'content-type': 'text/html'});
+      res.write(htmlPrefix);
       res.write('<h1>Hello Cloud</h1>');
       res.write('<h4>This page was loaded: ' + date + '</h4>');
+      res.write(htmlSuffix);
       res.end();
     });
 
     app.get('/*', function (req, res) {
       res.writeHead(200, {'content-type': 'text/html'});
+      res.write(htmlPrefix);
       res.write("<h4>Error: The page requested could not be found</h4>");
+      res.write(htmlSuffix);
       res.end();
     });
   };
