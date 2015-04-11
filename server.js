@@ -4,6 +4,8 @@
  * Maintenance Log:
  *  4/2/2015 Converted to an express server; added a route to handle bad
  *  addresses; Validated with JSLint
+ *
+ *  4/11/2015 Added ejs and routed a test template file
  */
 
 "use strict";
@@ -45,7 +47,11 @@ function ExpressWebserver() {
       res.write(htmlSuffix);
       res.end();
     });
-
+    
+    app.get('/test', function (req, res) {
+      res.render('test', { title: 'ejs' });
+    });
+  
     app.get('/*', function (req, res) {
       res.writeHead(200, {'content-type': 'text/html'});
       res.write(htmlPrefix);
@@ -53,6 +59,11 @@ function ExpressWebserver() {
       res.write(htmlSuffix);
       res.end();
     });
+  };
+  
+  var enableEjs = function() {
+    app.engine('html', require('ejs').renderFile);
+    app.set('view engine', 'html');
   };
 
   var beginListening = function () {
@@ -68,6 +79,7 @@ function ExpressWebserver() {
     start: function () {
       initializeServer();
       initializeRoutes();
+      enableEjs();
       beginListening();
     }
   };
