@@ -20,7 +20,8 @@
       <label>(none)</label>
       <br>
       <% categories.forEach(function (category) { %>
-      <input type="radio" name="category[]" value="<%=category._id %>">
+      <input type="radio" name="category[]" value="<%=category._id %>"
+        <% if (note.category && category._id.id == note.category.id) { %>checked<% } %>>
       <label><%=category.name %></label>
       <br>
       <% }); %>

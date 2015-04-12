@@ -7,6 +7,8 @@
  *
  *  4/11/2015 Added ejs and routed a test template file;
  *  Added mongoose and models for categories and notes;
+ *  Implemented adding categories
+ *  Implemented adding and editing notes
  */
 
 "use strict";
@@ -60,6 +62,8 @@ function ExpressWebserver() {
   };
 
   var initializeRoutes = function () {
+
+    // Hello Cloud
     app.get('/', function (req, res) {
 
       var date = new Date();
@@ -72,10 +76,9 @@ function ExpressWebserver() {
       res.end();
     });
 
-    app.get('/test', function (req, res) {
-      res.render('test', { title: 'C Sucks' });
-    });
-
+    //
+    // NODE NOTE
+    //
     app.get("/ctrl_panel", function (req, res) {
       mongoose.model("categories").find(function (err, categories) {
         mongoose.model("notes").find(function (err, notes) {
@@ -170,6 +173,22 @@ function ExpressWebserver() {
         mongoose.model("notes").findOne(
           {_id: req.params.noteId},
           function (err, note) {
+
+            if (note.category) {
+              // Mark a category as checked
+              categories.forEach(function (category) {
+                //console.log("category._id.id: '" + category._id.id
+                //  + "'; note.category.id: '" + note.category.id + "'");
+                if (category._id.id == note.category.id) {
+                  console.log("Match: " + category._doc.name);
+                  category.checked = true;
+                }
+              });
+            }
+
+            console.log("categories: ", JSON.stringify(categories));
+
+            // Display
             if (err) {
               res.redirect("/error/" + JSON.stringify(err));
             } else {
@@ -215,7 +234,9 @@ function ExpressWebserver() {
         });
       });
     });
+    //
 
+    // Error display
     app.get('/error/:error', function (req, res) {
       res.send(req.params.error);
     });
