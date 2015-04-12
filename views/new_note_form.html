@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+  <meta charset="UTF-8">
+  <title></title>
+</head>
+<body>
+  <form action="/add_note" method="post">
+    <legend>New Note</legend>
+
+    <fieldset>
+      <input type="text" name="title" placeholder="title" size="50" required>
+      <br>
+      <input type="text" name="description" placeholder="description" size="50">
+    </fieldset>
+    <% if (categories.length > 0) { %>
+    <fieldset>
+      <legend>Category</legend>
+      <input type="radio" name="category[]" value="">
+      <label>(none)</label>
+      <br>
+      <% categories.forEach(function (category) { %>
+        <input type="radio" name="category[]" value="<%=category._id %>">
+      <label><%=category.name %></label>
+        <br>
+      <% }); %>
+    </fieldset>
+    <% } %>
+    <fieldset>
+      <label>Public: </label>
+      <input type="checkbox" name="public">
+    </fieldset>
+    <br>
+
+    <textarea name="body" rows="20" cols="80" required>Type your note here</textarea>
+    <br>
+
+    <input type="submit" value="Submit">
+  </form>
+
+  <a href="/">Home</a>
+</body>
+</html>

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+  <meta charset="UTF-8">
+  <title></title>
+</head>
+<body>
+  <h1><%= note.title %></h1>
+  <% if (category) { %>
+    <h2><%= category.name %></h2>
+  <% } %>
+  <h3><%= note.description %></h3>
+  <p><%= note.body %></p>
+
+  <form action="/edit_note_form/<%= note._id %>" method="get">
+    <input type="submit" value="Edit">
+  </form>
+
+  <% if (note.public) { %>
+    <p><em>This note IS publicly viewable</em></p>
+  <% } else { %>
+    <p><em>This note is NOT publicly viewable</em></p>
+  <% } %>
+
+  <br>
+  <a href="/ctrl_panel">Home</a>
+</body>
+</html>

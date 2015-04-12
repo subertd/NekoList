@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+  <meta charset="UTF-8">
+  <title></title>
+</head>
+<body>
+  <form action="/edit_note/<%= note._id %>" method="post">
+    <legend>Edit Note</legend>
+    <input type="hidden" name="_id" value="<%= note._id %>">
+    <fieldset>
+      <input type="text" name="title" value="<%= note.title %>" size="50" required>
+      <br>
+      <input type="text" name="description" value="<%= note.description %>" size="50">
+    </fieldset>
+    <% if (categories.length > 0) { %>
+    <fieldset>
+      <legend>Category</legend>
+      <input type="radio" name="category[]" value="">
+      <label>(none)</label>
+      <br>
+      <% categories.forEach(function (category) { %>
+      <input type="radio" name="category[]" value="<%=category._id %>">
+      <label><%=category.name %></label>
+      <br>
+      <% }); %>
+    </fieldset>
+    <% } %>
+    <fieldset>
+      <label>Public: </label>
+      <input type="checkbox" name="public" <% if (note.public) { %>checked<% } %> >
+    </fieldset>
+    <br>
+
+    <textarea name="body" rows="20" cols="80" required><%= note.body %></textarea>
+    <br>
+
+    <input type="submit" value="Update">
+  </form>
+  <br>
+  <a href="/ctrl_panel">Home</a>
+</body>
+</html>
