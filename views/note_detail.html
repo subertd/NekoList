@@ -12,6 +12,7 @@
   <% if (note.description && note.description !== "") { %>
     <h3><%= note.description %></h3>
   <% } %>
+  <p><em>Priority: <%= note.priority %></em></p>
   <p><%= note.body %></p>
 
   <form action="/edit_note_form/<%= note._id %>" method="get">

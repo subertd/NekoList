@@ -7,6 +7,7 @@ var notesSchema = mongoose.Schema({
   title: String,
   description: String,
   public: Boolean,
+  priority: Number,
   body: String,
   category: {
     type: mongoose.Schema.ObjectId,

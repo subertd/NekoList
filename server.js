@@ -95,7 +95,7 @@ function ExpressWebserver() {
       var Category = mongoose.model('categories');
       new Category({
         name: form_data.name
-      }).save(function (err, doc) {
+      }).save(function (err) {
         if (err) {
           res.json(err);
         } else {
@@ -127,9 +127,10 @@ function ExpressWebserver() {
           description: form_data.description,
           category: category,
           public: form_data.public === "on",
+          priority: form_data.priority,
           body: form_data.body
         });
-        note.save(function (err, doc) {
+        note.save(function (err) {
 
           // After insert
           if (err) {
@@ -179,7 +180,7 @@ function ExpressWebserver() {
               categories.forEach(function (category) {
                 //console.log("category._id.id: '" + category._id.id
                 //  + "'; note.category.id: '" + note.category.id + "'");
-                if (category._id.id == note.category.id) {
+                if (category._id.id === note.category.id) {
                   console.log("Match: " + category._doc.name);
                   category.checked = true;
                 }
@@ -221,8 +222,9 @@ function ExpressWebserver() {
             description: form_data.description,
             category: category,
             public: form_data.public === "on",
+            priority: form_data.priority,
             body: form_data.body
-          }, {}, function (err, doc) {
+          }, {}, function (err) {
 
             // After update
             if (err) {
