@@ -40,6 +40,8 @@ function ExpressWebserver() {
   var ipaddress = process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1';
   var port = process.env.OPENSHIFT_NODEJS_PORT || 1337;
 
+  var mongoDbConnectionString = "127.0.0.1:27017/NodeNote";
+
   var htmlPrefix = "<!doctype html><html><head>" +
     "<meta charset='utf-8'><title>CS496 - Cloud/Mobile Development</title>" +
     "</head><body>";
@@ -233,7 +235,17 @@ function ExpressWebserver() {
   };
 
   var enableMongoose = function () {
-    mongoose.connect('mongodb://127.0.0.1:27017/smidgeon');
+    //mongoose.connect('mongodb://127.0.0.1:27017/smidgeon');
+    if (process.env.OPENSHIFT_MONGODB_DB_PASSWORD) {
+      mongoDbConnectionString =
+        process.env.OPENSHIFT_MONGODB_DB_USERNAME + ":" +
+        process.env.OPENSHIFT_MONGODB_DB_PASSWORD + "@" +
+        process.env.OPENSHIFT_MONGODB_DB_HOST + ':' +
+        process.env.OPENSHIFT_MONGODB_DB_PORT + '/' +
+        process.env.OPENSHIFT_APP_NAME;
+    }
+
+    mongoose.connect(mongoDbConnectionString);
   };
 
   var beginListening = function () {
