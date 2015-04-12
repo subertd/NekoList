@@ -2,11 +2,11 @@
 <html>
 <head lang="en">
   <meta charset="UTF-8">
-  <title></title>
+  <title>NodeNote - Edit Node Form</title>
 </head>
 <body>
   <form action="/edit_note/<%= note._id %>" method="post">
-    <legend>Edit Note</legend>
+    <title>Edit Note</title>
     <input type="hidden" name="_id" value="<%= note._id %>">
     <fieldset>
       <input type="text" name="title" value="<%= note.title %>" size="50" required>
