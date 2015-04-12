@@ -6,10 +6,12 @@
 </head>
 <body>
   <h1><%= note.title %></h1>
-  <% if (category && category.name) { %>
+  <% if (category) { %>
     <h2><%= category.name %></h2>
   <% } %>
-  <h3><%= note.description %></h3>
+  <% if (note.description && note.description !== "") { %>
+    <h3><%= note.description %></h3>
+  <% } %>
   <p><%= note.body %></p>
 
   <form action="/edit_note_form/<%= note._id %>" method="get">
