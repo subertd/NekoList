@@ -5,8 +5,8 @@
   <title>NodeNote - Edit Node Form</title>
 </head>
 <body>
+  <h3>Edit Note</h3>
   <form action="/edit_note/<%= note._id %>" method="post">
-    <title>Edit Note</title>
     <input type="hidden" name="_id" value="<%= note._id %>">
     <fieldset>
       <input type="text" name="title" value="<%= note.title %>" size="50" required>
