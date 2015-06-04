@@ -26,7 +26,7 @@ app.use(bodyParser.json());
 //var lists = require('routes/')
 
 var server_port = process.env.OPENSHIFT_NODEJS_PORT || 8080;
-//var server_ip_address = process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1';
+var server_ip_address = process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1';
 
 app.get("/", function (req, res) {
   res.setHeader('Content-Type', 'application/json');
@@ -35,9 +35,11 @@ app.get("/", function (req, res) {
   }));
 });
 
-var server = app.listen(server_port, function() {
+console.log("IP_ADDRESS: " + server_ip_address);
+console.log("PORT: " + server_port);
+
+var server = app.listen(server_port, server_ip_address, function() {
   var host = server.address().address;
   var port = server.address().port;
-
   console.log("Example app listening at http://%s:%s", host, port);
 });
