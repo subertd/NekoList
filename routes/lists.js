@@ -1,5 +1,5 @@
 /**
- * Created by Donald on 5/25/2015.
+ * Created by Donald on 6/3/2015.
  */
 
 var express = require('express');
@@ -7,21 +7,19 @@ var router = express.Router();
 
 var mongoose = require('mongoose');
 
-/**
- * @augments mongoose.Model
- */
-var Thing = require('../models/thing');
+var List = require('../models/list');
 
-/* GET sample JSON things from the server */
-
-/* get all the things */
+/* get all the lists for a user if authorized*/
 router.get("/", function(req, res) {
 
-  var query = Thing.find({});
+  console.log(req.headers);
+
+  var query = List.find({});
 
   query.exec(function(err, things) {
     if (err) {
-      throw err;
+      res.setHeader("content-type", "application/json");
+      res.send(JSON.stringify({success:false, error:err}));
     }
 
     res.setHeader("content-type", "application/json");
@@ -29,7 +27,7 @@ router.get("/", function(req, res) {
   });
 });
 
-/* get the thing by id */
+/* get the list by id if authorized */
 router.get("/:id", function(req, res) {
 
   var query = Thing.find({
@@ -38,7 +36,8 @@ router.get("/:id", function(req, res) {
 
   query.exec(function(err, thing) {
     if (err) {
-      throw err;
+      res.setHeader("content-type", "application/json");
+      res.send(JSON.stringify({success:false, error:err}));
     }
 
     res.setHeader("content-type", "application/json");
@@ -46,7 +45,7 @@ router.get("/:id", function(req, res) {
   });
 });
 
-/* insert a new thing */
+/* insert a new list for an authenticated user*/
 router.post("/", function(req, res) {
 
   var data = req.body;
@@ -61,7 +60,8 @@ router.post("/", function(req, res) {
 
   newThing.save(function(err, thing) {
     if (err) {
-      throw err;
+      res.setHeader("content-type", "application/json");
+      res.send(JSON.stringify({success:false, error:err}));
     }
 
     res.setHeader("content-type", "application/json");
@@ -72,7 +72,7 @@ router.post("/", function(req, res) {
   });
 });
 
-/* update an existing thing */
+/* update an existing list */
 router.put("/:id", function(req, res) {
 
   Thing.findOne({ "_id": req.params["id"] }, function(err, thing) {

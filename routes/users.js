@@ -33,45 +33,29 @@ router.get("/", function(req, res) {
   });
 });
 
-
-/* get the user by id */
-/*
-router.get("/:id", function(req, res) {
-
-  var query = User.find({
-      "_id": req.params["id"]
-    })
-    .select({
-      "passwordHash": false
-    });
-
-  query.exec(function(err, user) {
-    if (err) {
-      throw err;
-    }
-
-    res.setHeader("content-type", "application/json");
-    res.send(JSON.stringify(user));
-  });
-});
-*/
-
 /* insert a new user */
 router.post("/", function(req, res) {
 
-  var data = req.body;
-  var password = data.password;
+  var userName = req.headers["username"];
+  var password = req.headers["password"];
 
   passwordHasher.hashPassword(password, function(passwordHash) {
 
     var newUser = User({
-      'userName': data.userName,
+      'userName': userName,
       'passwordHash': passwordHash
     });
 
     newUser.save(function(err, user) {
       if (err) {
-        throw err;
+        var message = "Unable to persist new user";
+        console.log(message);
+        res.setHeader("content-type", "application/json");
+        res.send(JSON.stringify({
+          success: false,
+          message: message,
+          error: err
+        }));
       }
 
       res.setHeader("content-type", "application/json");
@@ -84,83 +68,48 @@ router.post("/", function(req, res) {
   });
 });
 
-router.post("/:id", function(req, res) {
+/* log the user in if supplied the right password */
+router.post("/logIn", function(req, res) {
 
-  var id = req.params["id"];
-  var password = req.body["password"];
+  var userName = req.headers["username"];
+  var password = req.headers["password"];
 
-  User.findOne({ "_id": id }, function(err, user) {
+  User.findOne({ "userName": userName }, function(err, user) {
+    if(err) {
+      var message = "Unable to search users collection";
+      console.log(message);
+      res.setHeader("content-type", "application/json");
+      res.send(JSON.stringify({ success: false, message:message, error: err }));
+    }
 
-    console.log(err, user);
-
-    // TODO handle err
+    if (!user) {
+      var message = "Unable to find user for userName '" + userName + "'";
+      console.log(message);
+      res.setHeader("content-type", "application/json");
+      res.send(JSON.stringify({ success:false, message:message }));
+    }
 
     passwordHasher.comparePasswordToHash(password, user.passwordHash, function(err, success) {
-      // TODO handle err
+      if(err) {
+        var message = "unable to compare passwords";
+        console.log(message);
+        res.setHeader("content-type", "application/json");
+        res.send(JSON.stringify({ success: false, message:message, error: err }));
+      }
 
       if (success) {
-        var session = sessions.createSession(id);
-
+        var session = sessions.createSession(user.id);
+        session.success = true;
         res.setHeader("content-type", "application/json");
         res.send(JSON.stringify(session));
       }
       else {
         res.setHeader("content-type", "application/json");
-        res.send(JSON.stringify({
-          success: false,
-          error: "Incorrect Password"
-        }));
+        res.send(JSON.stringify({ success: false, message: "Incorrect User Name or Password" }));
       }
 
     });
   });
 });
-
-/* update an existing user */
-/*
-router.put("/:id", function(req, res) {
-
-  User.findOne({ "_id": req.params["id"] }, function(err, user) {
-
-    var data = req.body;
-
-    user.name = data['name'];
-    user.username = data['username'];
-    user.password = data['password'];
-
-    user.save(function(err, user) {
-      if (err) {
-        throw err;
-      }
-
-      res.setHeader("content-type", "application/json");
-      res.send(JSON.stringify({
-        'success': true,
-        'id': user._id,
-        'username': user.name
-      }));
-    });
-  });
-});
-*/
-
-/* delete a user */
-/*
-router.delete("/:id", function(req, res) {
-
-  User.find({ "_id": req.params["id"]}).remove(function(err, status) {
-    if (err) {
-      throw err;
-    }
-
-    console.log(status);
-
-    res.setHeader("content-type", "application/json");
-    res.send(JSON.stringify({
-      "success": true
-    }));
-  });
-});
-*/
 
 module.exports = router;
