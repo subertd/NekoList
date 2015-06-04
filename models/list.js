@@ -8,8 +8,17 @@
 var mongoose = require('mongoose');
 
 var listSchema = new mongoose.Schema({
-  owner: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
-  name: String
+  owner: {type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true},
+  name: {type: String, required: true},
+  items: [
+    {
+      name:{
+        type: String,
+        required:true
+      },
+      check: Boolean
+    }
+  ]
 });
 
 var List = mongoose.model("List", listSchema);

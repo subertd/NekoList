@@ -25,7 +25,10 @@ router.get("/", function(req, res) {
 
   query.exec(function(err, users) {
     if (err) {
-      throw err;
+      var message = "Unable to retrieve users from persistent memory";
+      console.log(message, err);
+      res.setHeader("content-type", "application/json");
+      res.send(JSON.stringify({ success: false, message: message, error: err }));
     }
 
     res.setHeader("content-type", "application/json");
@@ -49,13 +52,9 @@ router.post("/", function(req, res) {
     newUser.save(function(err, user) {
       if (err) {
         var message = "Unable to persist new user";
-        console.log(message);
+        console.log(message, err);
         res.setHeader("content-type", "application/json");
-        res.send(JSON.stringify({
-          success: false,
-          message: message,
-          error: err
-        }));
+        res.send(JSON.stringify({ success: false, message: message, error: err }));
       }
 
       res.setHeader("content-type", "application/json");
@@ -77,7 +76,7 @@ router.post("/logIn", function(req, res) {
   User.findOne({ "userName": userName }, function(err, user) {
     if(err) {
       var message = "Unable to search users collection";
-      console.log(message);
+      console.log(message, err);
       res.setHeader("content-type", "application/json");
       res.send(JSON.stringify({ success: false, message:message, error: err }));
     }
@@ -92,7 +91,7 @@ router.post("/logIn", function(req, res) {
     passwordHasher.comparePasswordToHash(password, user.passwordHash, function(err, success) {
       if(err) {
         var message = "unable to compare passwords";
-        console.log(message);
+        console.log(message, err);
         res.setHeader("content-type", "application/json");
         res.send(JSON.stringify({ success: false, message:message, error: err }));
       }

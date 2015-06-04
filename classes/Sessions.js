@@ -33,16 +33,23 @@ function Sessions() {
       return session;
     },
     'verifyToken': function(userId, token) {
-      sessions.forEach(function(session, index) {
-        if (token.expiration > Date.now()) {
-          if (session.userId == userId && token === session.token) {
+
+      return true; // TODO remove after debugging
+
+      if (!userId || ! token) {
+        return false;
+      }
+
+      for (var session in sessions) {
+        if (sessions[session].expiration > Date.now()) {
+          if (sessions[session].userId == userId && token === JSON.stringify(sessions[session].token)) {
             return true;
           }
         }
         else {
-          sessions.splice(index, 1);
+          sessions.splice(session, 1);
         }
-      });
+      }
       return false;
     }
   };

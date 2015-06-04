@@ -9,108 +9,195 @@ var mongoose = require('mongoose');
 
 var List = require('../models/list');
 
+var sessions = require('../classes/Sessions');
+
+var host = "http://" + (process.env.OPENSHIFT_NODEJS_IP || "localhost");
+
 /* get all the lists for a user if authorized*/
 router.get("/", function(req, res) {
 
-  console.log(req.headers);
+  var userId = req.headers["userid"];
+  var token = req.headers["token"];
 
-  var query = List.find({});
+  if (sessions.verifyToken(userId, token)) {
 
-  query.exec(function(err, things) {
-    if (err) {
+    var query = List.find({
+      owner: userId
+    });
+
+    query.exec(function(err, lists) {
+      if (err) {
+        var message = "Unable to get lists from persistent memory";
+        console.log(message, err);
+        res.setHeader("content-type", "application/json");
+        res.send(JSON.stringify({ success: false, message: message, error: err }));
+      }
+
+      // Add Hypermedia
+      lists.forEach(function(list) {
+        list._doc.listURL = host + "/lists/" + list._id;
+        list._doc.ownerURL = host + "/users/" + list.owner;
+        list._doc.itemsURL = host + "/lists/" + list._id + "/items";
+      });
+
       res.setHeader("content-type", "application/json");
-      res.send(JSON.stringify({success:false, error:err}));
-    }
-
+      res.send(JSON.stringify(lists));
+    });
+  }
+  else {
     res.setHeader("content-type", "application/json");
-    res.send(JSON.stringify(things));
-  });
+    res.send(JSON.stringify({ success: false, message: "Invalid UserId or Token" }));
+  }
 });
 
 /* get the list by id if authorized */
 router.get("/:id", function(req, res) {
 
-  var query = Thing.find({
-    "_id": req.params["id"]
-  });
+  var userId = req.headers["userid"];
+  var token = req.headers["token"];
 
-  query.exec(function(err, thing) {
-    if (err) {
+  var listId = req.params["id"];
+
+  if (sessions.verifyToken(userId, token)) {
+
+    var query = List.findOne({
+      owner: userId,
+      "_id": listId
+    });
+
+    query.exec(function (err, list) {
+      if (err) {
+        var message = "Unable to get list from persistent memory";
+        console.log(message, err);
+        res.setHeader("content-type", "application/json");
+        res.send(JSON.stringify({ success: false, message: message, error: err }));
+      }
+
+      if (!list) {
+        res.setHeader("content-type", "application/json");
+        res.send(JSON.stringify({
+          success: false,
+          message: "Either the resource does not exist or access is not authorized"
+        }));
+      }
+
+      // Add Hypermedia
+      list._doc.ownerUrl = host + "/users/" + list.owner;
+      list._doc.itemsUrl = host + "/lists/" + listId + "/items";
+
       res.setHeader("content-type", "application/json");
-      res.send(JSON.stringify({success:false, error:err}));
-    }
-
+      res.send(JSON.stringify(list));
+    });
+  }
+  else {
     res.setHeader("content-type", "application/json");
-    res.send(JSON.stringify(thing));
-  });
+    res.send(JSON.stringify({ success: false, message: "Invalid UserId or Token"}));
+  }
 });
 
 /* insert a new list for an authenticated user*/
 router.post("/", function(req, res) {
 
-  var data = req.body;
+  var userId = req.headers["userid"];
+  var token = req.headers["token"];
 
-  var newThing = Thing({
-    'foo': data.foo,
-    'bar': data.bar,
-    'baz': data.baz,
-    'createdOn': Date.now(),
-    'editedOn': null
-  });
-
-  newThing.save(function(err, thing) {
-    if (err) {
-      res.setHeader("content-type", "application/json");
-      res.send(JSON.stringify({success:false, error:err}));
-    }
-
-    res.setHeader("content-type", "application/json");
-    res.send(JSON.stringify({
-      'success': true,
-      'thing': thing
-    }));
-  });
-});
-
-/* update an existing list */
-router.put("/:id", function(req, res) {
-
-  Thing.findOne({ "_id": req.params["id"] }, function(err, thing) {
-
+  if (sessions.verifyToken(userId, token)) {
     var data = req.body;
 
-    thing.foo = data['foo'];
-    thing.bar = data['bar'];
-    thing.baz = data['baz'];
-    thing.editedOn = Date.now();
+    var newList = List({
+      'owner': userId,
+      'name': data.name
+    });
 
-    thing.save(function(err, thing) {
+    newList.save(function (err, list) {
       if (err) {
-        throw err;
+        var message = "Unable to persist list";
+        console.log(message, err);
+        res.setHeader("content-type", "application/json");
+        res.send(JSON.stringify({success: false, message:message, error: err}));
       }
 
       res.setHeader("content-type", "application/json");
       res.send(JSON.stringify({
-        'success': true,
-        'thing': thing
+        success: true,
+        list: list
       }));
     });
-  });
-});
-
-/* delete a thing */
-router.delete("/:id", function(req, res) {
-
-  Thing.findOneAndRemove({"_id": req.params["id"]}, function (err) {
-    if (err) {
-      throw err;
-    }
-
+  }
+  else {
     res.setHeader("content-type", "application/json");
     res.send(JSON.stringify({
-      "success": true
+      success: false,
+      message: "Invalid User Id or Token"
     }));
-  });
+  }
+});
+
+/* insert a new item into a list, if authorized */
+router.post("/:id/items", function(req, res) {
+
+  var userId = req.headers["userid"];
+  var token = req.headers["token"];
+
+  var listId = req.params["id"];
+
+  if (sessions.verifyToken(userId, token)) {
+    var data = req.body;
+
+    var query = List.findOne({
+      owner: userId,
+      "_id": listId
+    });
+
+    query.exec(function(err, list) {
+      if (err) {
+        var message = "Unable to get list from persistent memory";
+        console.log(message, err);
+        res.setHeader("content-type", "application/json");
+        res.send(JSON.stringify({ success: false, message: message, error: err }));
+      }
+
+      if (!list) {
+        res.setHeader("content-type", "application/json");
+        res.send(JSON.stringify({
+          success: false,
+          message: "Either the list resource does not exist or access is not authorized"
+        }));
+      }
+
+      list.items.push({
+        name: req.body["name"],
+        quantity: req.body["quantity"],
+        check: false
+      });
+
+      list.save(function(err, list) {
+        if (err) {
+          var message = "Unable save appended list to persistent memory";
+          console.log(message, err);
+          res.setHeader("content-type", "application/json");
+          res.send(JSON.stringify({success: false, message: message, error: err}));
+        }
+
+        /*
+        var listItem = null;
+        list._doc.items.forEach()
+
+        // add hypermedia
+        listItem.parentURL = host + "/lists" + listId;
+*/
+        res.setHeader("content-type", "application/json");
+        res.send(JSON.stringify(list));
+      });
+    });
+  }
+  else {
+    res.setHeader("content-type", "application/json");
+    res.send(JSON.stringify({
+      success: false,
+      message: "Invalid User Id or Token"
+    }));
+  }
 });
 
 module.exports = router;
