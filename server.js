@@ -18,9 +18,10 @@ console.log('Server running at ' + server_ip_address + ":" + server_port);
 var express = require('express');
 var app = express();
 
-
+/*
 var bodyParser = require("body-parser");
 app.use(bodyParser.json());
+*/
 
 //var lists = require('routes/')
 
