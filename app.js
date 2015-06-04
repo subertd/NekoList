@@ -15,10 +15,6 @@ var lists = require('./routes/lists');
 
 var app = express();
 
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'ejs');
-
 // uncomment after placing your favicon in /public
 //app.use(favicon(__dirname + '/public/favicon.ico'));
 app.use(logger('dev'));
@@ -30,6 +26,14 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', routes);
 app.use('/users', users);
 app.use('/lists', lists);
+
+app.get("/", function (req, res) {
+  res.setHeader('Content-Type', 'application/json');
+  res.send(JSON.stringify({
+    usersURL:server_ip_address + ":" + server_port + "/users",
+    listsURL:server_ip_address + ":" + server_port + "/lists"
+  }));
+});
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -44,23 +48,24 @@ app.use(function(req, res, next) {
 // will print stacktrace
 if (app.get('env') === 'development') {
   app.use(function(err, req, res, next) {
-    res.status(err.status || 500);
-    res.render('error', {
-      message: err.message,
-      error: err
-    });
+    res.setHeader("content-type", "application/json");
+    res.send(JSON.stringify({
+      success:false,
+      message:err.message,
+      error:err
+    }));
   });
 }
 
 // production error handler
 // no stacktraces leaked to users
 app.use(function(err, req, res, next) {
-  res.status(err.status || 500);
-  res.render('error', {
-    message: err.message,
-    error: {}
-  });
+  res.setHeader("content-type", "application/json");
+  res.send(JSON.stringify({
+    success:false,
+    message:err.message,
+    error:err
+  }));
 });
-
 
 module.exports = app;

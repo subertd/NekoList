@@ -117,6 +117,9 @@ router.post("/", function(req, res) {
         res.send(JSON.stringify({success: false, message:message, error: err}));
       }
 
+      // add hypermedia
+      list._doc.ownerURL = host + "/users/" + list._doc.owner;
+
       res.setHeader("content-type", "application/json");
       res.send(JSON.stringify({
         success: true,

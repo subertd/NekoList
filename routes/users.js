@@ -16,8 +16,6 @@ var sessions = require('../classes/Sessions');
  */
 var User = require('../models/user');
 
-/* GET sample JSON users from the server */
-
 /* get all users */
 router.get("/", function(req, res) {
 
@@ -35,6 +33,24 @@ router.get("/", function(req, res) {
     res.send(JSON.stringify(users));
   });
 });
+
+/* get a single user */
+router.get("/:id", function(req, res) {
+
+  var query = User.findOne({"_id": req.params["id"]}).select({"passwordHash": false});
+
+  query.exec(function(err, user) {
+    if (err) {
+      var message = "Unable to retrieve user from persistent memory";
+      console.log(message, err);
+      res.setHeader("content-type", "application/json");
+      res.send(JSON.stringify({ success: false, message: message, error: err }));
+    }
+
+    res.setHeader("content-type", "application/json");
+    res.send(JSON.stringify(user));
+  });
+})
 
 /* insert a new user */
 router.post("/", function(req, res) {
