@@ -5,7 +5,6 @@
   "scripts": {
     "start": "$OPENSHIFT_REPO_DIR/bin/www"
   },
-  "main": "./bin/www",
   "dependencies": {
     "bcrypt-nodejs": "0.0.3",
     "body-parser": "~1.12.4",
