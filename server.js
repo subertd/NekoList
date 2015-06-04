@@ -22,8 +22,14 @@ var app = express();
 var bodyParser = require("body-parser");
 app.use(bodyParser.json());
 
+var mongoose = require('mongoose');
+mongoose.connect('mongodb://localhost/myappdatabase');
 
 var lists = require('./routes/lists');
+app.use('/lists', lists);
+
+var users = require('./routes/users');
+app.use('/users', users);
 
 var server_port = process.env.OPENSHIFT_NODEJS_PORT || 8080;
 var server_ip_address = process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1';
