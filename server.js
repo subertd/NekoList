@@ -1,3 +1,6 @@
+require('./bin/www');
+
+/*
 var http = require('http');
 
 var server_port = process.env.OPENSHIFT_NODEJS_PORT || 8080;
@@ -8,3 +11,4 @@ http.createServer(function (req, res) {
   res.end('Hello World\n');
 }).listen(server_port, server_ip_address);
 console.log('Server running at ' + server_ip_address + ":" + server_port);
+  */
