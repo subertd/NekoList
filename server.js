@@ -23,7 +23,8 @@ var bodyParser = require("body-parser");
 app.use(bodyParser.json());
 
 var mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost/myappdatabase');
+var mongodbUrl = process.env.OPENSHIFT_MONGODB_DB_URL || 'mongodb://localhost/myappdatabase';
+mongoose.connect(mongodbUrl);
 
 var lists = require('./routes/lists');
 app.use('/lists', lists);
