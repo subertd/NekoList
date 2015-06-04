@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "./bin/www"
+    "start": "$OPENSHIFT_REPO_DIR/bin/www"
   },
   "dependencies": {
     "bcrypt-nodejs": "0.0.3",
