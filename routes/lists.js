@@ -200,4 +200,52 @@ router.post("/:id/items", function(req, res) {
   }
 });
 
+/* show all the items in a list, if authorized */
+router.get("/:id/items/", function(req, res) {
+
+  var userId = req.headers["userid"];
+  var token = req.headers["token"];
+
+  var listId = req.params["id"];
+
+  if (sessions.verifyToken(userId, token)) {
+
+    var query = List.findOne({
+      owner: userId,
+      "_id": listId
+    });
+
+    query.exec(function (err, list) {
+      if (err) {
+        var message = "Unable to get list from persistent memory";
+        console.log(message, err);
+        res.setHeader("content-type", "application/json");
+        res.send(JSON.stringify({ success: false, message: message, error: err }));
+      }
+
+      if (!list) {
+        res.setHeader("content-type", "application/json");
+        res.send(JSON.stringify({
+          success: false,
+          message: "Either the resource does not exist or access is not authorized"
+        }));
+      }
+
+      var listItems = list._doc.items;
+
+      // Add Hypermedia
+      listItems.forEach(function(item) {
+        item.itemURL = host + "/items/" + item._id;
+      })
+
+      res.setHeader("content-type", "application/json");
+      res.send(JSON.stringify(listItems));
+    });
+  }
+  else {
+    res.setHeader("content-type", "application/json");
+    res.send(JSON.stringify({ success: false, message: "Invalid UserId or Token"}));
+  }
+});
+
 module.exports = router;

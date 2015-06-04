@@ -6,7 +6,8 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
 var mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost/myappdatabase');
+var mongodbUrl = process.env.OPENSHIFT_MONGODB_DB_URL || 'mongodb://localhost/myappdatabase';
+mongoose.connect(mongodbUrl);
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
