@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/HelloCloud.iml" filepath="$PROJECT_DIR$/.idea/HelloCloud.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/ProjectTemplate.iml" filepath="$PROJECT_DIR$/.idea/ProjectTemplate.iml" />
     </modules>
   </component>
 </project>
