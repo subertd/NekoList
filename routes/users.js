@@ -60,7 +60,17 @@ router.post("/", function(req, res) {
   var userName = req.headers["username"];
   var password = req.headers["password"];
 
-  passwordHasher.hashPassword(password, function(passwordHash) {
+  passwordHasher.hashPassword(password, function(err, passwordHash) {
+    if (err) {
+      var message = "Unable to hash password";
+      console.log(message, err);
+      res.setHeader("content-type", "application/json");
+      res.send(JSON.stringify({ success: false, message: message, error: err }));
+      return;
+    }
+
+    console.log("userName: " + userName);
+    console.log("passwordHash: " + passwordHash);
 
     var newUser = User({
       'userName': userName,
