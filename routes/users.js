@@ -52,7 +52,7 @@ router.get("/:id", function(req, res) {
   });
 })
 
-/* insert a new user */
+/* insert a new user and log in */
 router.post("/", function(req, res) {
 
   var userName = req.headers["username"];
@@ -73,11 +73,15 @@ router.post("/", function(req, res) {
         res.send(JSON.stringify({ success: false, message: message, error: err }));
       }
 
+      var session = sessions.createSession(user.id);
+
       res.setHeader("content-type", "application/json");
       res.send(JSON.stringify({
         'success': true,
         'id': user._id,
-        'userName': user.userName
+        'userName': user.userName,
+        'token': session.token,
+        'expiration': session.expiration
       }));
     });
   });

@@ -34,8 +34,6 @@ function Sessions() {
     },
     'verifyToken': function(userId, token) {
 
-      return true; // TODO remove after debugging
-
       if (!userId || ! token) {
         return false;
       }
