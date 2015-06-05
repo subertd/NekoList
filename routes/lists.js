@@ -154,7 +154,7 @@ router.post("/:id/items", function(req, res) {
     var query = List.findOne({
       owner: userId,
       "_id": listId
-    });
+    }).populate("owner");
 
     query.exec(function(err, list) {
       if (err) {
