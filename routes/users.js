@@ -27,6 +27,7 @@ router.get("/", function(req, res) {
       console.log(message, err);
       res.setHeader("content-type", "application/json");
       res.send(JSON.stringify({ success: false, message: message, error: err }));
+      return;
     }
 
     res.setHeader("content-type", "application/json");
@@ -45,6 +46,7 @@ router.get("/:id", function(req, res) {
       console.log(message, err);
       res.setHeader("content-type", "application/json");
       res.send(JSON.stringify({ success: false, message: message, error: err }));
+      return;
     }
 
     res.setHeader("content-type", "application/json");
@@ -71,6 +73,7 @@ router.post("/", function(req, res) {
         console.log(message, err);
         res.setHeader("content-type", "application/json");
         res.send(JSON.stringify({ success: false, message: message, error: err }));
+        return;
       }
 
       var session = sessions.createSession(user.id);
@@ -99,6 +102,7 @@ router.post("/logIn", function(req, res) {
       console.log(message, err);
       res.setHeader("content-type", "application/json");
       res.send(JSON.stringify({ success: false, message:message, error: err }));
+      return;
     }
 
     if (!user) {
@@ -106,6 +110,7 @@ router.post("/logIn", function(req, res) {
       console.log(message);
       res.setHeader("content-type", "application/json");
       res.send(JSON.stringify({ success:false, message:message }));
+      return;
     }
 
     passwordHasher.comparePasswordToHash(password, user.passwordHash, function(err, success) {
@@ -114,6 +119,7 @@ router.post("/logIn", function(req, res) {
         console.log(message, err);
         res.setHeader("content-type", "application/json");
         res.send(JSON.stringify({ success: false, message:message, error: err }));
+        return;
       }
 
       if (success) {

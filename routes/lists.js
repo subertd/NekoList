@@ -31,6 +31,7 @@ router.get("/", function(req, res) {
         console.log(message, err);
         res.setHeader("content-type", "application/json");
         res.send(JSON.stringify({ success: false, message: message, error: err }));
+        return;
       }
 
       // Add Hypermedia
@@ -71,6 +72,7 @@ router.get("/:id", function(req, res) {
         console.log(message, err);
         res.setHeader("content-type", "application/json");
         res.send(JSON.stringify({ success: false, message: message, error: err }));
+        return;
       }
 
       if (!list) {
@@ -79,6 +81,7 @@ router.get("/:id", function(req, res) {
           success: false,
           message: "Either the resource does not exist or access is not authorized"
         }));
+        return;
       }
 
       // Add Hypermedia
@@ -115,11 +118,11 @@ router.post("/", function(req, res) {
         console.log(message, err);
         res.setHeader("content-type", "application/json");
         res.send(JSON.stringify({success: false, message:message, error: err}));
+        return;
       }
 
       // add hypermedia
       list._doc.ownerURL = host + "/users/" + list._doc.owner;
-      list._doc.itemsUrl = host + "/lists/" + listId + "/items";
 
       res.setHeader("content-type", "application/json");
       res.send(JSON.stringify({
@@ -159,6 +162,7 @@ router.post("/:id/items", function(req, res) {
         console.log(message, err);
         res.setHeader("content-type", "application/json");
         res.send(JSON.stringify({ success: false, message: message, error: err }));
+        return;
       }
 
       if (!list) {
@@ -167,6 +171,7 @@ router.post("/:id/items", function(req, res) {
           success: false,
           message: "Either the list resource does not exist or access is not authorized"
         }));
+        return;
       }
 
       list.items.push({
@@ -181,6 +186,7 @@ router.post("/:id/items", function(req, res) {
           console.log(message, err);
           res.setHeader("content-type", "application/json");
           res.send(JSON.stringify({success: false, message: message, error: err}));
+          return;
         }
 
         /*
@@ -205,7 +211,7 @@ router.post("/:id/items", function(req, res) {
 });
 
 /* show all the items in a list, if authorized */
-router.get("/:id/items/", function(req, res) {
+router.get("/:id/items", function(req, res) {
 
   var userId = req.headers["userid"];
   var token = req.headers["token"];
@@ -225,6 +231,7 @@ router.get("/:id/items/", function(req, res) {
         console.log(message, err);
         res.setHeader("content-type", "application/json");
         res.send(JSON.stringify({ success: false, message: message, error: err }));
+        return;
       }
 
       if (!list) {
@@ -233,6 +240,7 @@ router.get("/:id/items/", function(req, res) {
           success: false,
           message: "Either the resource does not exist or access is not authorized"
         }));
+        return;
       }
 
       var listItems = list._doc.items;

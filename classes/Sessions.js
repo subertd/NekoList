@@ -25,7 +25,7 @@ function Sessions() {
       var session = {
         userId: userId,
         token: token,
-        expiration: Date.now() + 1000000
+        expiration: Date.now() + 10000000
       }
 
       sessions.push(session);

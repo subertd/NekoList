@@ -10,13 +10,19 @@ function PasswordHasher() {
   return {
     hashPassword: function(password, callback) {
 
+      if (!password) {
+        callback("Missing Password");
+        return;
+      }
+
       bcrypt.genSalt(saltWorkFactor, function(err, salt) {
-        // TODO handle error
+        if (err) {
+          callback(err, salt);
+          return;
+        }
 
         bcrypt.hash(password, salt, null, function(err, hash) {
-          // TODO handle error
-
-          callback(hash);
+          callback(err, hash);
         });
       });
     },

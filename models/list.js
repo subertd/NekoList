@@ -16,6 +16,7 @@ var listSchema = new mongoose.Schema({
         type: String,
         required:true
       },
+      quantity:Number,
       check: Boolean
     }
   ]
