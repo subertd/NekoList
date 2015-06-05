@@ -174,11 +174,15 @@ router.post("/:id/items", function(req, res) {
         return;
       }
 
+      console.log("List Before Push: " + list);
+
       list.items.push({
         name: req.body["name"],
         quantity: req.body["quantity"],
         check: false
       });
+
+      console.log("List After Push: " + list);
 
       list.save(function(err, list) {
         if (err) {
