@@ -12,10 +12,7 @@ var listSchema = new mongoose.Schema({
   name: {type: String, required: true},
   items: [
     {
-      name:{
-        type: String,
-        required:true
-      },
+      name:String,
       quantity:Number,
       check: Boolean
     }

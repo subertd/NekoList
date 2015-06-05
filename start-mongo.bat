@@ -1,1 +1,1 @@
-mongod -dbpath=C:/Temp/mongodb3
+C:\MongoDB\mongodb-win32-x86_64-2008plus-2.4.14\bin\mongod -dbpath=C:/Temp/mongodb4
