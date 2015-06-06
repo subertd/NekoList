@@ -519,7 +519,7 @@ router.delete("/:listId/items/:itemId", function(req, res) {
 
       var found = false;
       for (var i = 0; i < list._doc.items.length; ++i) {
-        if (list._doc.items[i]._id = itemId) {
+        if (list._doc.items[i]._id == itemId) {
           list._doc.items.splice(i, 1);
           found = true;
         }
