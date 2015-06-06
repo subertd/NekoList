@@ -185,7 +185,7 @@ router.put("/:id", function(req, res) {
         }
 
         res.setHeader("content-type", "application/json");
-        res.send(JSON.stringify(list));
+        res.send(JSON.stringify({success:true}));
       });
     });
   }
