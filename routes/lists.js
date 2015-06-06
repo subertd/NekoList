@@ -469,7 +469,7 @@ router.put("/:listId/items/:itemId", function(req, res) {
         }
 
         res.setHeader("content-type", "application/json");
-        res.send(JSON.stringify(item));
+        res.send(JSON.stringify({success:true}));
       });
     });
   }
