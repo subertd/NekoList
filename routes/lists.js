@@ -156,8 +156,24 @@ router.put("/:id", function(req, res) {
     }).populate("owner");
 
     query.exec(function(err, list) {
+      if (err){
+        var message = "Unable to get the list to update";
+        console.log(message, err);
+        res.setHeader("content-type", "application/json");
+        res.send(JSON.stringify({success: false, message: message, error: err}));
+        return;
+      }
 
-      list._doc.name = req.body.name;
+      if (!list) {
+        res.setHeader("content-type", "application/json");
+        res.send(JSON.stringify({
+          success: false,
+          message: "Either the list resource does not exist or access is not authorized"
+        }));
+        return;
+      }
+
+      list.name = req.body.name;
 
       list.save(function(err, list) {
         if (err) {
@@ -169,7 +185,7 @@ router.put("/:id", function(req, res) {
         }
 
         res.setHeader("content-type", "application/json");
-        res.send(list);
+        res.send(JSON.stringify(list));
       });
     });
   }
